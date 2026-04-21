@@ -31,13 +31,15 @@ A full-stack web platform for automotive and motorcycle enthusiasts to:
 git clone <repository-url>
 cd moto-cooperation
 npm run install-all
+copy .env.example .env
+# set DATABASE_URL, JWT_SECRET, BLOB_READ_WRITE_TOKEN
 npm start
 ```
 
 ### Access
 - **Website**: http://localhost:3000
 - **Admin Panel**: http://localhost:3000/admin
-- **Admin Login**: `admin` / `moto2024`
+- **Admin Login**: uses `ADMIN_CREDENTIAL` / `ADMIN_PASSWORD` from environment
 
 ---
 
@@ -45,11 +47,22 @@ npm start
 
 ```
 moto-cooperation/
+├── api/
+│   └── [...path].js          # Vercel serverless API entry
 ├── backend/
-│   ├── server.js              # Express server
-│   ├── app.js                 # API routes
-│   ├── auth.js                # JWT auth & roles
-│   └── data/                  # JSON database
+│   ├── server.js              # local server entry
+│   ├── app.js                 # compatibility export
+│   ├── src/
+│   │   ├── config/
+│   │   ├── database/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── middlewares/
+│   │   ├── utils/
+│   │   ├── app.js
+│   │   └── server.js
+│   └── data/                  # seed bootstrap input files
 ├── frontend/
 │   ├── index.html             # Main website
 │   ├── admin/
@@ -214,7 +227,8 @@ All endpoints are prefixed with `/api`
 - JWT (authentication)
 
 ### Data
-- JSON files (easily migratable to PostgreSQL/MongoDB)
+- PostgreSQL via `DATABASE_URL`
+- Existing `backend/data/*.json` files are used as first-run seed input
 - File-based storage for assets
 
 ### Deployment

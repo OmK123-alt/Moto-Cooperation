@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "echo skip",
+  "buildCommand": "echo build-complete",
   "outputDirectory": "frontend",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/admin", "destination": "/admin/index.html" }
   ],
   "functions": {
-    "api/index.js": {
+    "api/[...path].js": {
       "includeFiles": "backend/data/**"
     }
   }

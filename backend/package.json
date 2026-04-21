@@ -12,7 +12,13 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
+    "@vercel/blob": "^0.27.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.12.0",
     "multer": "^2.1.1"
   },
   "devDependencies": {}

@@ -4,7 +4,8 @@
 A full-stack Car & Bike community platform with:
 - **Frontend**: HTML/CSS/JS responsive website
 - **Backend**: Express.js API with admin dashboard
-- **Data**: JSON-based file storage (easily migrated to database)
+- **Data**: PostgreSQL persistence (seeded from existing JSON files on first run)
+- **Media Uploads**: Vercel Blob for hero video storage
 
 ---
 
@@ -21,7 +22,14 @@ A full-stack Car & Bike community platform with:
 ```bash
 cd moto-cooperation
 npm run install-all
+copy .env.example .env
 ```
+
+Fill `.env` with:
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `BLOB_READ_WRITE_TOKEN`
+- optional `ADMIN_CREDENTIAL`, `ADMIN_PASSWORD`, `ADMIN_NAME`
 
 ### 2. Start Server
 ```bash
@@ -33,20 +41,21 @@ cd backend && npm start
 ### 3. Access Application
 - **Website**: http://localhost:3000
 - **Admin Panel**: http://localhost:3000/admin
-- **Admin Login**: `admin` / `moto2024`
+- **Admin Login**: uses `ADMIN_CREDENTIAL` / `ADMIN_PASSWORD` from environment
 
 ---
 
 ## 📁 Project Structure
 ```
 moto-cooperation/
+├── api/
+│   └── [...path].js        (Vercel serverless entry)
 ├── backend/
-│   ├── server.js           (Express server entry point)
-│   ├── app.js              (API routes & middleware)
-│   ├── auth.js             (JWT authentication & role system)
-│   ├── api.js              (Serverless handler for Vercel)
+│   ├── server.js           (Local entry)
+│   ├── app.js              (Compatibility export)
+│   ├── src/                (Structured backend layers)
 │   ├── package.json
-│   └── data/               (JSON database files)
+│   └── data/               (Seed bootstrap JSON files)
 │       ├── products.json
 │       ├── events.json
 │       ├── builds.json
@@ -102,9 +111,11 @@ moto-cooperation/
 6. **Root Directory**: `.` (root)
 7. **Build Command**: `npm install && cd backend && npm install`
 8. **Output Directory**: `frontend`
-9. **Start Command**: `cd backend && npm start`
+9. **Start Command**: leave empty (Vercel uses `api/[...path].js`)
 10. Add Environment Variables:
-    - `JWT_SECRET=your-secret-key`
+  - `DATABASE_URL=your-postgres-url`
+  - `JWT_SECRET=your-secret-key`
+  - `BLOB_READ_WRITE_TOKEN=your-vercel-blob-token`
     - `NODE_ENV=production`
 11. Deploy!
 

@@ -167,7 +167,7 @@
     <input type="password" id="loginPass" placeholder="Password" />
     <button class="login-btn" onclick="doLogin()">ENTER PANEL</button>
     <div class="login-error" id="loginError"></div>
-    <p class="login-hint">Default: admin / moto2024</p>
+    <p class="login-hint">Use your employee credential and password</p>
   </div>
 </div>
 
@@ -650,32 +650,96 @@
 /* ================================================
    AUTH
    ================================================ */
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'moto2024'; // ← Change this password!
+let adminToken = localStorage.getItem('mcAdminToken') || '';
+let adminUser = null;
 
-function doLogin() {
-  const u = document.getElementById('loginUser').value;
-  const p = document.getElementById('loginPass').value;
-  if (u === ADMIN_USER && p === ADMIN_PASS) {
+async function apiFetch(url, options = {}, requireAuth = false) {
+  const opts = { ...options, headers: { ...(options.headers || {}) } };
+  if (requireAuth && adminToken) {
+    opts.headers.Authorization = `Bearer ${adminToken}`;
+  }
+  const res = await fetch(url, opts);
+  if (requireAuth && (res.status === 401 || res.status === 403)) {
+    logout(true);
+    throw new Error('Your session expired. Please login again.');
+  }
+  return res;
+}
+
+async function doLogin() {
+  const credential = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+
+  if (!credential || !password) {
+    errEl.textContent = 'Please enter credential and password.';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential, password })
+    });
+    const data = await res.json();
+
+    if (!data.success || !data.token) {
+      errEl.textContent = data.error || 'Invalid credentials. Try again.';
+      return;
+    }
+
+    adminToken = data.token;
+    adminUser = data.user || null;
+    localStorage.setItem('mcAdminToken', adminToken);
+    localStorage.setItem('mcAdminUser', JSON.stringify(adminUser || {}));
+
     document.getElementById('loginScreen').style.display = 'none';
-    initData();
-  } else {
-    document.getElementById('loginError').textContent = 'Invalid credentials. Try again.';
+    await initData();
+  } catch (_err) {
+    errEl.textContent = 'Login failed. Please try again.';
   }
 }
+
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-function logout() {
+
+function logout(showMessage = false) {
+  adminToken = '';
+  adminUser = null;
+  localStorage.removeItem('mcAdminToken');
+  localStorage.removeItem('mcAdminUser');
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').textContent = showMessage ? 'Session expired. Please login again.' : '';
 }
+
+async function restoreAdminSession() {
+  if (!adminToken) return;
+  try {
+    const res = await apiFetch('/api/admin/me', {}, true);
+    const data = await res.json();
+    if (data.success) {
+      adminUser = data.user;
+      document.getElementById('loginScreen').style.display = 'none';
+      await initData();
+      return;
+    }
+    logout();
+  } catch (_err) {
+    logout();
+  }
+}
+
+window.addEventListener('load', restoreAdminSession);
 
 /* ================================================
    HERO VIDEO
    ================================================ */
 async function loadVideoState() {
   try {
-    const s = await fetch('/api/settings').then(r => r.json());
+    const s = await apiFetch('/api/settings').then(r => r.json());
     const badge  = document.getElementById('videoStatusBadge');
     const wrap   = document.getElementById('videoPreviewWrap');
     const vid    = document.getElementById('dashVideoPreview');
@@ -716,7 +780,7 @@ async function uploadHeroVideo(e) {
 
   try {
     bar.style.width = '60%';
-    const res = await fetch('/api/hero-video', { method: 'POST', body: formData });
+    const res = await apiFetch('/api/hero-video', { method: 'POST', body: formData }, true);
     const data = await res.json();
     bar.style.width = '100%';
     if (data.success) {
@@ -737,7 +801,7 @@ async function uploadHeroVideo(e) {
 async function deleteHeroVideo() {
   if (!confirm('Remove the hero video? The site will revert to the default background.')) return;
   try {
-    await fetch('/api/hero-video', { method: 'DELETE' });
+    await apiFetch('/api/hero-video', { method: 'DELETE' }, true);
     await loadVideoState();
     showToast('🗑️ VIDEO REMOVED');
   } catch(err) { console.error(err); }
@@ -750,7 +814,7 @@ let allUsers = [];
 
 async function loadUsers() {
   try {
-    const res = await fetch('/api/users');
+    const res = await apiFetch('/api/users', {}, true);
     const data = await res.json();
     allUsers = data.users || [];
     renderUserTable(allUsers);
@@ -780,7 +844,7 @@ function renderUserTable(list) {
 async function deleteUser(id) {
   if (!confirm('Remove this user?')) return;
   try {
-    await fetch('/api/users/' + id, { method: 'DELETE' });
+    await apiFetch('/api/users/' + id, { method: 'DELETE' }, true);
     await loadUsers();
     showToast('🗑️ USER REMOVED');
   } catch (err) { console.error(err); }
@@ -808,7 +872,7 @@ async function loadReports() {
   // Re-use allUsers if already loaded, else fetch
   if (!allUsers.length) {
     try {
-      const res = await fetch('/api/users');
+      const res = await apiFetch('/api/users', {}, true);
       const data = await res.json();
       allUsers = data.users || [];
     } catch(err) { console.error(err); }
@@ -878,9 +942,9 @@ let events   = [];
 async function initData() {
   try {
     const [pr, ev, bu] = await Promise.all([
-      fetch('/api/products').then(r => r.json()),
-      fetch('/api/events').then(r => r.json()),
-      fetch('/api/builds').then(r => r.json())
+      apiFetch('/api/products').then(r => r.json()),
+      apiFetch('/api/events').then(r => r.json()),
+      apiFetch('/api/builds').then(r => r.json())
     ]);
     products = pr.products || [];
     events   = ev.events   || [];
@@ -897,16 +961,16 @@ async function initData() {
 }
 
 async function persist() {
-  await fetch('/api/products', {
+  await apiFetch('/api/products', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ products })
-  });
-  await fetch('/api/events', {
+  }, true);
+  await apiFetch('/api/events', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ events })
-  });
+  }, true);
 }
 
 function updateStats() {
@@ -1371,11 +1435,11 @@ async function deleteBuild(id) {
 }
 
 async function persistBuilds() {
-  await fetch('/api/builds', {
+  await apiFetch('/api/builds', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ builds })
-  });
+  }, true);
 }
 
 function previewBuildImg(e) {
@@ -1417,7 +1481,7 @@ function clearBuildFilters() {
    ================================================ */
 async function loadContacts() {
   try {
-    const data = await fetch('/api/contact').then(r => r.json());
+    const data = await apiFetch('/api/contact', {}, true).then(r => r.json());
     allContacts = data.contacts || [];
     renderContactTable(allContacts);
   } catch (err) {
@@ -1453,7 +1517,7 @@ function renderContactTable(contacts) {
 
 async function deleteContact(id) {
   if (!confirm('Delete this submission?')) return;
-  await fetch('/api/contact/' + id, { method: 'DELETE' });
+  await apiFetch('/api/contact/' + id, { method: 'DELETE' }, true);
   loadContacts();
   showToast('🗑️ CONTACT DELETED');
 }
