@@ -1,0 +1,7 @@
+/* Additional section overrides if needed */
+/* Gallery item gradients */
+.g1 { background: linear-gradient(135deg, #1a0a0a, #2d1010); }
+.g2 { background: linear-gradient(135deg, #0a0a1a, #101020); }
+.g3 { background: linear-gradient(135deg, #0a1a0a, #102010); }
+.g4 { background: linear-gradient(135deg, #1a1a0a, #202010); }
+.g5 { background: linear-gradient(135deg, #1a0a1a, #201020); }

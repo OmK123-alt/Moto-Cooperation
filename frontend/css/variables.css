@@ -1,0 +1,28 @@
+:root {
+  /* Colors */
+  --red:         #D42B2B;
+  --red-bright:  #FF1F1F;
+  --black:       #080808;
+  --dark:        #111111;
+  --dark2:       #181818;
+  --gray:        #2a2a2a;
+  --gray-light:  #444444;
+  --white:       #F0EDE8;
+  --white-dim:   #999999;
+  --green:       #1a8a3a;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-cond:    'Barlow Condensed', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+
+  /* Spacing */
+  --section-pad: 100px 48px;
+  --nav-height:  72px;
+
+  /* Clip paths */
+  --clip-btn-sm:  polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  --clip-btn-md:  polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  --clip-btn-lg:  polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%);
+  --clip-card:    polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+}

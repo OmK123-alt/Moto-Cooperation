@@ -1,0 +1,26 @@
+{
+  "contacts": [
+    {
+      "id": "c-1772792212679",
+      "date": "6/3/2026, 3:46:52 pm",
+      "firstName": "Partheep",
+      "lastName": "Pillai",
+      "email": "shakkyaa13@gmail.com",
+      "phone": "+91 7666021301",
+      "interest": "Joining the Community",
+      "message": "Enthusiast",
+      "status": "new"
+    },
+    {
+      "id": "c-1772874841028",
+      "date": "7/3/2026, 2:44:01 pm",
+      "firstName": "Shakkya",
+      "lastName": "Belhekar",
+      "email": "shakkyaa13@gmail.com",
+      "phone": "+91 7666021301",
+      "interest": "Franchise Enquiry",
+      "message": "Host a Event",
+      "status": "new"
+    }
+  ]
+}

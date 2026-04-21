@@ -1,0 +1,16 @@
+{
+  "products": [
+    {
+      "id": "mc-1776376288757",
+      "name": "MUDGUARD DUKE 390 ( CARBON FIBRE )",
+      "description": "MUDGUARD DUKE 390 ( CARBON FIBRE )",
+      "price": 15000,
+      "category": "bike",
+      "badge": "",
+      "emoji": "🔩",
+      "image": "",
+      "stock": 50,
+      "featured": false
+    }
+  ]
+}
