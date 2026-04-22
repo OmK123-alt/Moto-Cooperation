@@ -1,13 +1,26 @@
 const { Pool } = require('pg');
-const { databaseUrl } = require('../config/env');
+const { databaseUrl, createConfigError } = require('../config/env');
 
-if (!databaseUrl) {
-  throw new Error('DATABASE_URL is required');
+let pool;
+
+function getPool() {
+  if (!databaseUrl) {
+    throw createConfigError('Server misconfiguration: DATABASE_URL is required for API/database operations.');
+  }
+
+  if (!pool) {
+    pool = new Pool({
+      connectionString: databaseUrl,
+      ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+    });
+  }
+
+  return pool;
 }
 
-const pool = new Pool({
-  connectionString: databaseUrl,
-  ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false }
-});
-
-module.exports = pool;
+module.exports = {
+  getPool,
+  query(text, params) {
+    return getPool().query(text, params);
+  }
+};

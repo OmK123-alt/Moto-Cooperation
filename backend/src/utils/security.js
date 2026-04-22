@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require('../config/env');
+const { jwtSecret, createConfigError } = require('../config/env');
 
 const SALT_ROUNDS = 10;
 
@@ -12,7 +12,14 @@ function comparePassword(password, hash) {
   return bcrypt.compare(password, hash);
 }
 
+function ensureJwtSecret() {
+  if (!jwtSecret) {
+    throw createConfigError('Server misconfiguration: JWT_SECRET is required for authentication.');
+  }
+}
+
 function signToken(user) {
+  ensureJwtSecret();
   return jwt.sign(
     {
       id: user.id,
@@ -26,6 +33,7 @@ function signToken(user) {
 }
 
 function verifyToken(token) {
+  ensureJwtSecret();
   return jwt.verify(token, jwtSecret);
 }
 

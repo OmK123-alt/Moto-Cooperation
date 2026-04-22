@@ -5,7 +5,16 @@ function notFound(_req, res) {
 function errorHandler(err, _req, res, _next) {
   console.error(err);
   const status = err.status || 500;
-  res.status(status).json({ success: false, error: err.message || 'Internal server error' });
+  const payload = {
+    success: false,
+    error: err.message || 'Internal server error'
+  };
+
+  if (err.code === 'CONFIG_ERROR') {
+    payload.code = 'CONFIG_ERROR';
+  }
+
+  res.status(status).json(payload);
 }
 
 module.exports = {

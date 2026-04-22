@@ -32,7 +32,8 @@ git clone <repository-url>
 cd moto-cooperation
 npm run install-all
 copy .env.example .env
-# set DATABASE_URL, JWT_SECRET, BLOB_READ_WRITE_TOKEN
+# required: DATABASE_URL, JWT_SECRET
+# optional: BLOB_READ_WRITE_TOKEN, ADMIN_CREDENTIAL, ADMIN_PASSWORD, ADMIN_NAME
 npm start
 ```
 
@@ -252,15 +253,15 @@ All endpoints are prefixed with `/api`
 - ✅ Structured for authentication
 - ✅ Role-based permissions defined
 - ✅ JWT token validation
-- ⚠️ Admin credentials still partially hardcoded
+- ✅ Admin bootstrap credentials are environment-driven (no production hardcoded defaults)
 
 ### Recommended for Production
-- [ ] Hash all passwords with bcrypt
-- [ ] Move credentials to environment variables
+- [x] Hash all passwords with bcrypt
+- [x] Move credentials to environment variables
 - [ ] Enable HTTPS/SSL
 - [ ] Set up rate limiting
 - [ ] Add CORS headers
-- [ ] Implement database
+- [x] Implement database
 - [ ] Add request logging
 - [ ] Enable backups
 - [ ] Add error monitoring (Sentry, etc.)
@@ -269,13 +270,14 @@ All endpoints are prefixed with `/api`
 
 ## 🚀 Deployment
 
-See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for comprehensive deployment guides:
-- Local development
-- Netlify + Render
-- Vercel
-- Railway
-- Docker
-- VPS
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for Vercel-ready production deployment steps.
+Required in Vercel:
+- `DATABASE_URL`
+- `JWT_SECRET`
+
+Optional in Vercel:
+- `BLOB_READ_WRITE_TOKEN` (hero video upload only)
+- `ADMIN_CREDENTIAL`, `ADMIN_PASSWORD`, `ADMIN_NAME` (admin bootstrap)
 
 ---
 
@@ -312,17 +314,14 @@ MIT License - See LICENSE file for details
 
 ## 🐛 Known Issues
 
-- Admin panel credentials currently hardcoded (being refactored)
-- Vercel deployment has limited file upload (read-only filesystem)
+- Hero video upload endpoint requires `BLOB_READ_WRITE_TOKEN`
 - Contact form email notifications require EmailJS setup
-- Recommend database migration for production scale
 
 ---
 
 ## 📚 Documentation
 
 - [Deployment Guide](./DEPLOYMENT.md) - How to deploy
-- [API Documentation](./DEPLOYMENT.md#api-documentation) - API endpoints
 
 ---
 
@@ -340,16 +339,6 @@ MIT License - See LICENSE file for details
 
 **Built with 🔥 for the automotive community**
 
-*Last Updated: April 21, 2026*
+*Last Updated: April 22, 2026*
 *Version: 1.0.0*
 *Status: Production Ready ✅*
-- **Vercel** (free): `npx vercel` in terminal
-- **GitHub Pages**: Push to repo → enable Pages in settings
-
----
-
-## 📞 Contact Details
-- Phone: +91 76660 21301
-- Email: motocooperation0@gmail.com
-- Instagram: @moto.co.in
-- Location: Pune, Maharashtra, India

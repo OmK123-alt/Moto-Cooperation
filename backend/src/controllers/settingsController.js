@@ -19,7 +19,10 @@ async function uploadHeroVideo(req, res) {
   }
 
   if (!blobToken) {
-    return res.status(500).json({ success: false, error: 'BLOB_READ_WRITE_TOKEN is not set' });
+    return res.status(503).json({
+      success: false,
+      error: 'Hero video upload is unavailable: BLOB_READ_WRITE_TOKEN is not configured.'
+    });
   }
 
   const fileName = `hero-${Date.now()}-${req.file.originalname || 'video.mp4'}`;
