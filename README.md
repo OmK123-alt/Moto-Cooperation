@@ -285,9 +285,9 @@ Optional in Vercel:
 
 **Moto Cooperation Headquarters**
 - 📍 Pune, Maharashtra, India
-- 📞 +91 76660 21301
-- 💬 WhatsApp: https://wa.me/917666021301
-- 📧 Email: motocooperation0@gmail.com
+- 📞 +91 00000 00000
+- 💬 WhatsApp: https://wa.me/910000000000
+- 📧 Email: hello@motocooperation.example
 - 📸 Instagram: @moto.co.in
 
 **Office Hours**

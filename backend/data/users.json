@@ -1,12 +1,12 @@
 {
   "users": [
     {
-      "id": "u-1772914663182",
-      "name": "Partheep Pillai",
-      "credential": "shakkyaa13@gmail.com",
-      "password": "Partheep111",
-      "joinDate": "8/3/2026",
-      "avatar": "PP"
+      "id": "u-demo-001",
+      "name": "Demo Rider",
+      "credential": "demo.user@example.com",
+      "password": "ChangeMe123!",
+      "joinDate": "4/24/2026",
+      "avatar": "DR"
     }
   ]
 }
