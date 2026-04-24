@@ -212,9 +212,9 @@ After deploying, create employee accounts with different roles:
 ## 📞 Support Contacts
 
 **Moto Cooperation HQ**
-- Email: hello@motocooperation.example
-- Phone: +91 00000 00000
-- WhatsApp: https://wa.me/910000000000
+- Email: motocooperation0@gmail.com
+- Phone: +91 76660 21301
+- WhatsApp: https://wa.me/917666021301
 
 ---
 
