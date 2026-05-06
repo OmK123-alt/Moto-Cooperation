@@ -41,8 +41,8 @@ Notes:
 3. Use these settings:
    - Framework Preset: `Other`
    - Root Directory: `.`
-   - Build Command: `echo build-complete`
-   - Output Directory: `frontend`
+  - Build Command: `node scripts/copy-frontend.js`
+  - Output Directory: `public`
 4. Add required environment variables from section 1.
 5. Add optional variables from section 2 only if needed.
 6. Deploy.
@@ -51,8 +51,8 @@ Notes:
 
 Configured in `vercel.json`:
 - `/api/*` is handled by `api/[...path].js`
-- `/admin` and `/admin/*` rewrite to `frontend/admin/index.html`
-- Other static files are served from `frontend/`
+- `/admin` and `/admin/*` rewrite to `frontend/admin/index.html` during build copy
+- The built site is served from `public/`
 
 ## 5. Post-Deploy Verification
 
