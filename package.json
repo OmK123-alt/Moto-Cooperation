@@ -9,8 +9,8 @@
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
     "install-all": "npm install && cd backend && npm install && cd ..",
-    "vercel-build": "echo Build complete",
-    "build": "echo Build complete"
+    "vercel-build": "node scripts/copy-frontend.js",
+    "build": "node scripts/copy-frontend.js"
   },
   "engines": {
     "node": ">=14.0.0"
