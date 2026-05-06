@@ -20,7 +20,13 @@
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; height: 100%; }
+
+  /* Use modern viewport units with fallback for mobile UI chrome */
+  :root { --vh: 1vh; }
+  @supports (height: 100svh) {
+    :root { --vh: 1svh; }
+  }
 
   body {
     background: var(--black);
@@ -29,65 +35,70 @@
     overflow-x: hidden;
     cursor: none;
   }
+  /* Fluid media rules */
+  img, picture, video, canvas, svg { max-width: 100%; height: auto; display: block; }
 
-  img, video, canvas, svg {
-    max-width: 100%;
-    height: auto;
-  }
-
-  a, button, input, select, textarea {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--red);
-    outline-offset: 3px;
-  }
+  /* Mobile tap and focus styles */
+  a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
   /* Custom Cursor */
-  .cursor {
-    width: 12px; height: 12px;
-    background: var(--red-bright);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 8000;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease, width 0.2s, height 0.2s;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(212,43,43,0.6);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 7999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.15s ease, width 0.2s, height 0.2s;
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
   }
 
-  /* Auth modal always uses normal cursor */
-  #authModal, #authModal * { cursor: default !important; }
-  #profileDropdown, #profileDropdown * { cursor: pointer !important; }
-
-  /* Carbon fiber texture */
-  .carbon {
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
-      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
+  /* Aspect-ratio specific tweaks */
+  @media (max-aspect-ratio: 9/16) {
+    /* Very tall / narrow viewports (phones held vertically) */
+    .hero-title { font-size: clamp(40px, 18vw, 90px); }
+    .hero-eyebrow { font-size: 12px; letter-spacing: 6px; }
+    .hero-sub { max-width: 320px; font-size: 14px; }
+    .hero-line, .hero-line2 { display: none; }
   }
 
-  /* NAV */
+  @media (min-aspect-ratio: 16/9) {
+    /* Wide screens: preserve large scale but keep lines and overlays subtle */
+    .hero-title { font-size: clamp(100px, 12vw, 220px); }
+    .hero-sub { max-width: 700px; }
+  }
+
+  @media (min-width: 1440px) {
+    section { padding-left: 72px; padding-right: 72px; }
+    nav { padding-left: 72px; padding-right: 72px; }
+    footer { padding-left: 72px; padding-right: 72px; }
+    .hero-title { font-size: clamp(96px, 11vw, 210px); }
+    .section-title { font-size: clamp(56px, 5vw, 98px); }
+    .events-grid { grid-template-columns: repeat(4, 1fr); }
+    .products-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 1200px) {
+    nav { padding: 0 28px; }
+    section { padding: 84px 28px; }
+    .stats-bar { gap: 48px; flex-wrap: wrap; }
+    .events-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
+    .gallery-item:first-child,
+    .gallery-item:nth-child(4) { grid-column: span 1; }
+    .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .footer-top { grid-template-columns: 2fr 1fr 1fr; gap: 36px; }
+  }
+
   nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 80px;
     padding: 0 48px;
-    height: 72px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(8,8,8,0.92);
+    background: rgba(8, 8, 8, 0.75);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(212,43,43,0.2);
+    border-bottom: 1px solid rgba(212, 43, 43, 0.2);
   }
   .nav-logo {
     font-family: 'Bebas Neue', sans-serif;
@@ -136,6 +147,8 @@
   /* HERO */
   #hero {
     height: 100vh;
+    min-height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: relative;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
@@ -150,7 +163,9 @@
   }
   .hero-video {
     position: absolute; inset: 0;
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
     object-fit: cover;
     opacity: 0.55;
     z-index: 0;
@@ -439,8 +454,8 @@
   }
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 260px);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-auto-rows: 260px;
     gap: 4px;
   }
   .gallery-item {
@@ -498,7 +513,7 @@
     color: var(--white); background: var(--red); border-color: var(--red);
   }
   .products-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px;
   }
   .product-card {
     background: var(--dark2);
@@ -741,28 +756,6 @@
   }
   .reveal.visible {
     opacity: 1; transform: translateY(0);
-  }
-
-  @media (min-width: 1440px) {
-    section { padding-left: 72px; padding-right: 72px; }
-    nav { padding-left: 72px; padding-right: 72px; }
-    footer { padding-left: 72px; padding-right: 72px; }
-    .hero-title { font-size: clamp(96px, 11vw, 210px); }
-    .section-title { font-size: clamp(56px, 5vw, 98px); }
-    .events-grid { grid-template-columns: repeat(4, 1fr); }
-    .products-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  @media (max-width: 1200px) {
-    nav { padding: 0 28px; }
-    section { padding: 84px 28px; }
-    .stats-bar { gap: 48px; flex-wrap: wrap; }
-    .events-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
-    .gallery-item:first-child,
-    .gallery-item:nth-child(4) { grid-column: span 1; }
-    .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .footer-top { grid-template-columns: 2fr 1fr 1fr; gap: 36px; }
   }
 
   /* Mobile */
@@ -1215,6 +1208,28 @@
 </footer>
 
 <script>
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function nl2brEscaped(s) {
+    return escapeHtml(s).replace(/\r\n/g, '\n').replace(/\n/g, '<br>');
+  }
+
+  function safeBackgroundImageUrl(url) {
+    const u = String(url || '').trim();
+    if (!u) return '';
+    if (/^javascript:/i.test(u) || /^data:/i.test(u)) return '';
+    if (u.startsWith('/') && !u.startsWith('//')) return u;
+    if (/^https?:\/\//i.test(u)) return u;
+    return '';
+  }
+
   // ── EVENTS from API ───────────────────────────
   function renderEvents(eventsData) {
     const grid = document.getElementById('eventsGrid');
@@ -1225,15 +1240,15 @@
     }
     grid.innerHTML = eventsData.map(ev => `
       <div class="event-card ${ev.featured ? 'featured' : ''}">
-        <div class="event-date">${ev.date}</div>
-        <div class="event-month">${ev.month}</div>
-        <span class="event-tag">${ev.tag}</span>
-        <div class="event-name">${ev.name}</div>
+        <div class="event-date">${escapeHtml(ev.date)}</div>
+        <div class="event-month">${escapeHtml(ev.month)}</div>
+        <span class="event-tag">${escapeHtml(ev.tag)}</span>
+        <div class="event-name">${escapeHtml(ev.name)}</div>
         <div class="event-meta">
-          <strong>📍 ${ev.location}</strong><br>
-          ${ev.details.replace(/\n/g, '<br>')}
+          <strong>📍 ${escapeHtml(ev.location)}</strong><br>
+          ${nl2brEscaped(ev.details)}
         </div>
-        <div class="event-arrow">${ev.cta} →</div>
+        <div class="event-arrow">${escapeHtml(ev.cta)} →</div>
       </div>
     `).join('');
   }
@@ -1249,28 +1264,43 @@
       grid.innerHTML = '<p style="color:var(--white-dim);padding:40px;grid-column:1/-1">No products in this category yet.</p>';
       return;
     }
-    grid.innerHTML = filtered.map(p => `
+    grid.innerHTML = filtered.map(p => {
+      const imgUrl = safeBackgroundImageUrl(p.image);
+      const bg = imgUrl ? `background-image:url(${JSON.stringify(imgUrl)})` : '';
+      const placeholder = imgUrl ? '' : `<span style="font-size:60px;position:relative;z-index:1">${escapeHtml(p.emoji || '🔩')}</span>`;
+      const idAttr = escapeHtml(p.id);
+      return `
       <div class="product-card">
-        <div class="product-img" style="${p.image ? `background-image:url('${p.image}')` : ''}">
-          ${p.image ? '' : `<span style="font-size:60px;position:relative;z-index:1">${p.emoji || '🔩'}</span>`}
+        <div class="product-img" style="${bg}">
+          ${placeholder}
         </div>
         <div class="product-info">
-          <span class="product-badge">${p.badge || p.category}</span>
-          <div class="product-name">${p.name}</div>
-          <div class="product-desc">${p.description}</div>
+          <span class="product-badge">${escapeHtml(p.badge || p.category)}</span>
+          <div class="product-name">${escapeHtml(p.name)}</div>
+          <div class="product-desc">${escapeHtml(p.description)}</div>
           <div class="product-footer">
             <div class="product-price"><span>₹</span>${Number(p.price).toLocaleString('en-IN')}</div>
-            <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
+            <button type="button" class="add-btn" data-product-id="${idAttr}">ADD TO CART</button>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   function addToCart(id) {
     const p = allProducts.find(x => x.id === id);
     if (p) alert(`✅ "${p.name}" added to cart!\n\n(Connect Razorpay to activate checkout.)`);
   }
+
+  (function bindProductGridClicks() {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+    grid.addEventListener('click', function (e) {
+      const btn = e.target.closest('.add-btn[data-product-id]');
+      if (!btn || !btn.dataset.productId) return;
+      addToCart(btn.dataset.productId);
+    });
+  })();
 
   // Shop tab switching
   document.querySelectorAll('.shop-tab').forEach(tab => {
@@ -1293,22 +1323,29 @@
       grid.innerHTML = '<p style="color:var(--white-dim);padding:40px;grid-column:1/-1">No builds yet. Add some via the Admin Panel.</p>';
       return;
     }
-    grid.innerHTML = list.map((b, i) => `
+    grid.innerHTML = list.map((b, i) => {
+      const imgUrl = safeBackgroundImageUrl(b.image);
+      const extra = imgUrl
+        ? `background-image:url(${JSON.stringify(imgUrl)});background-size:cover;background-position:center;font-size:0`
+        : 'font-size:90px';
+      const cat = (b.category != null ? String(b.category) : '').toUpperCase();
+      const sub = b.sub != null ? String(b.sub) : cat;
+      return `
       <div class="gallery-item">
         <div class="gallery-bg ${bgClasses[i % bgClasses.length]}"
-          style="${b.image ? `background-image:url('${b.image}');background-size:cover;background-position:center;font-size:0` : `font-size:90px`}">
-          ${b.image ? '' : b.emoji || '🚗'}
+          style="${extra}">
+          ${imgUrl ? '' : escapeHtml(b.emoji || '🚗')}
         </div>
         <div class="gallery-overlay">
           <div>
-            <div class="gallery-sub">${b.sub || b.category.toUpperCase()}</div>
-            <div class="gallery-label">${b.name}</div>
-            ${b.builder ? `<div style="font-size:11px;color:var(--white-dim);margin-top:4px">👤 ${b.builder}</div>` : ''}
-            ${b.keyFeature ? `<div style="font-size:11px;color:var(--red);margin-top:4px">⚡ ${b.keyFeature}</div>` : ''}
+            <div class="gallery-sub">${escapeHtml(sub)}</div>
+            <div class="gallery-label">${escapeHtml(b.name)}</div>
+            ${b.builder ? `<div style="font-size:11px;color:var(--white-dim);margin-top:4px">👤 ${escapeHtml(b.builder)}</div>` : ''}
+            ${b.keyFeature ? `<div style="font-size:11px;color:var(--red);margin-top:4px">⚡ ${escapeHtml(b.keyFeature)}</div>` : ''}
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   // Gallery filter buttons

@@ -14,6 +14,11 @@ DATABASE_URL=postgres://...
 JWT_SECRET=use-a-long-random-secret
 ```
 
+Supabase note:
+- You can use either `DATABASE_URL` (preferred) or `SUPABASE_DB_URL`.
+- In Supabase dashboard, go to `Project Settings -> Database -> Connection string -> URI`.
+- For Vercel/serverless deployments, prefer the pooler/transaction URI.
+
 Without these, API endpoints return a clear `CONFIG_ERROR` response.
 
 ## 2. Optional Environment Variables
@@ -80,3 +85,18 @@ npm start
 Local URLs:
 - Site: `http://localhost:3000`
 - Admin: `http://localhost:3000/admin`
+
+## 8. Supabase Quick Connect
+
+1. Create a Supabase project.
+2. Open `Project Settings -> Database`.
+3. Copy a Postgres URI connection string (pooler/transaction mode recommended).
+4. In `.env`, set one of:
+  - `DATABASE_URL=<your-supabase-uri>`
+  - `SUPABASE_DB_URL=<your-supabase-uri>`
+5. Set `JWT_SECRET`.
+6. Start app with `npm start`.
+
+On first API hit, the backend will:
+- create tables if they do not exist,
+- seed initial data from `backend/data/*.json` only when tables are empty.

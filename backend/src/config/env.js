@@ -1,7 +1,12 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
-const REQUIRED_ENV_KEYS = ['DATABASE_URL', 'JWT_SECRET'];
+const databaseUrl =
+  readEnv('DATABASE_URL') ||
+  readEnv('SUPABASE_DB_URL') ||
+  readEnv('SUPABASE_DATABASE_URL');
+
+const REQUIRED_ENV_KEYS = ['DATABASE_URL (or SUPABASE_DB_URL)', 'JWT_SECRET'];
 
 function readEnv(name, fallback = '') {
   const value = process.env[name];
@@ -17,7 +22,10 @@ function createConfigError(message) {
 }
 
 function getMissingRequiredEnv() {
-  return REQUIRED_ENV_KEYS.filter((key) => !readEnv(key));
+  const missing = [];
+  if (!databaseUrl) missing.push('DATABASE_URL (or SUPABASE_DB_URL)');
+  if (!readEnv('JWT_SECRET')) missing.push('JWT_SECRET');
+  return missing;
 }
 
 function getApiConfigError() {
@@ -30,7 +38,7 @@ module.exports = {
   nodeEnv: readEnv('NODE_ENV', 'development'),
   port: Number(process.env.PORT || 3000),
   jwtSecret: readEnv('JWT_SECRET'),
-  databaseUrl: readEnv('DATABASE_URL'),
+  databaseUrl,
   blobToken: readEnv('BLOB_READ_WRITE_TOKEN'),
   adminCredential: readEnv('ADMIN_CREDENTIAL'),
   adminPassword: readEnv('ADMIN_PASSWORD'),

@@ -32,7 +32,7 @@ git clone <repository-url>
 cd moto-cooperation
 npm run install-all
 copy .env.example .env
-# required: DATABASE_URL, JWT_SECRET
+# required: DATABASE_URL (or SUPABASE_DB_URL), JWT_SECRET
 # optional: BLOB_READ_WRITE_TOKEN, ADMIN_CREDENTIAL, ADMIN_PASSWORD, ADMIN_NAME
 npm start
 ```
@@ -229,6 +229,7 @@ All endpoints are prefixed with `/api`
 
 ### Data
 - PostgreSQL via `DATABASE_URL`
+- Supabase Postgres is supported via `DATABASE_URL` or `SUPABASE_DB_URL`
 - Existing `backend/data/*.json` files are used as first-run seed input
 - File-based storage for assets
 
@@ -272,7 +273,7 @@ All endpoints are prefixed with `/api`
 
 See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for Vercel-ready production deployment steps.
 Required in Vercel:
-- `DATABASE_URL`
+- `DATABASE_URL` (or `SUPABASE_DB_URL`)
 - `JWT_SECRET`
 
 Optional in Vercel:

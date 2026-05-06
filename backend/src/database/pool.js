@@ -9,9 +9,14 @@ function getPool() {
   }
 
   if (!pool) {
+    const isLocalConnection = /localhost|127\.0\.0\.1/i.test(databaseUrl);
+
     pool = new Pool({
       connectionString: databaseUrl,
-      ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+      ssl: isLocalConnection ? false : { rejectUnauthorized: false },
+      max: Number(process.env.PGPOOL_MAX || 10),
+      idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT_MS || 30000),
+      connectionTimeoutMillis: Number(process.env.PG_CONNECT_TIMEOUT_MS || 10000)
     });
   }
 
