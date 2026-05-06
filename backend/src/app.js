@@ -21,7 +21,13 @@ app.use('/api', (_req, _res, next) => {
 
 app.use('/api', async (_req, _res, next) => {
   try {
-    await initializeDatabase();
+    // Avoid running DB schema creation/seed on every serverless invocation.
+    // On Vercel (serverless) this can hang if the database is unreachable
+    // — skip the initialization step unless explicitly forced.
+    const forceInit = String(process.env.FORCE_DB_INIT || '') === 'true';
+    if (!isVercel || forceInit) {
+      await initializeDatabase();
+    }
     return next();
   } catch (error) {
     return next(error);
