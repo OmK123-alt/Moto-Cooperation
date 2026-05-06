@@ -3,10 +3,8 @@
   "buildCommand": "node scripts/copy-frontend.js",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/(.*)", "destination": "/admin/index.html" },
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/admin/(.*)", "destination": "/admin/index.html" }
   ],
   "functions": {
     "api/[...path].js": {
