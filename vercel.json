@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "echo build-complete",
+  "buildCommand": "node scripts/copy-frontend.js",
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/admin", "destination": "/admin/index.html" },
