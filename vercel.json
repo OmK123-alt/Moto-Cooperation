@@ -1,6 +1,7 @@
 {
   "version": 2,
   "buildCommand": "echo build-complete",
+  "outputDirectory": "frontend",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/admin", "destination": "/admin/index.html" },
