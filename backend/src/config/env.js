@@ -1,10 +1,47 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
+function buildDatabaseUrlFromParts() {
+  const host =
+    readEnv('DATABASE_HOST') ||
+    readEnv('PGHOST') ||
+    readEnv('SUPABASE_DB_HOST') ||
+    readEnv('DB_HOST');
+  if (!host) return '';
+
+  const port = readEnv('DATABASE_PORT') || readEnv('PGPORT') || readEnv('SUPABASE_DB_PORT') || readEnv('DB_PORT');
+  const user =
+    readEnv('DATABASE_USER') ||
+    readEnv('PGUSER') ||
+    readEnv('SUPABASE_DB_USER') ||
+    readEnv('DB_USER') ||
+    '';
+  const password =
+    readEnv('DATABASE_PASSWORD') ||
+    readEnv('PGPASSWORD') ||
+    readEnv('SUPABASE_DB_PASSWORD') ||
+    readEnv('DB_PASSWORD') ||
+    '';
+  const db =
+    readEnv('DATABASE_NAME') ||
+    readEnv('PGDATABASE') ||
+    readEnv('SUPABASE_DB_NAME') ||
+    readEnv('DB_NAME') ||
+    '';
+
+  if (!db) return '';
+
+  const auth = user && password ? `${encodeURIComponent(user)}:${encodeURIComponent(password)}@` : user && !password ? `${encodeURIComponent(user)}@` : '';
+  const portPart = port ? `:${port}` : '';
+  return `postgresql://${auth}${host}${portPart}/${db}`;
+}
+
 const databaseUrl =
   readEnv('DATABASE_URL') ||
   readEnv('SUPABASE_DB_URL') ||
-  readEnv('SUPABASE_DATABASE_URL');
+  readEnv('SUPABASE_DATABASE_URL') ||
+  // Support common PG/Supabase component env vars for Vercel import
+  buildDatabaseUrlFromParts();
 
 const REQUIRED_ENV_KEYS = ['DATABASE_URL (or SUPABASE_DB_URL)', 'JWT_SECRET'];
 
