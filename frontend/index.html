@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOTO COOPERATION</title>
+<script>
+  // Force legacy frontend assets/behavior to take priority.
+  window.__USE_LEGACY_FRONTEND__ = true;
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/reset.css">
@@ -1288,6 +1292,16 @@
     }
   }
 </style>
+<!-- Re-apply legacy styles after inline styles so older frontend CSS takes precedence -->
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/shop.css">
+<link rel="stylesheet" href="css/contact.css">
+<link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
 
@@ -1855,7 +1869,9 @@
       console.error('Could not reach server:', err);
     }
   }
-  initSite();
+  if (!window.__USE_LEGACY_FRONTEND__) {
+    initSite();
+  }
 
   // Mobile navigation
   (function initMobileNav() {
