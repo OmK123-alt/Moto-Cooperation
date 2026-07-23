@@ -6,8 +6,13 @@ let initPromise;
 async function initializeDatabase() {
   if (!initPromise) {
     initPromise = (async () => {
-      await ensureSchema();
-      await seedAll();
+      try {
+        await ensureSchema();
+        await seedAll();
+      } catch (error) {
+        initPromise = null;
+        throw error;
+      }
     })();
   }
   return initPromise;

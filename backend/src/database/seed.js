@@ -44,22 +44,30 @@ async function seedUsers() {
     );
   }
 
-  const adminExists = await pool.query('SELECT 1 FROM users WHERE credential = $1 LIMIT 1', [String(adminCredential).toLowerCase()]);
-  if (adminExists.rowCount === 0) {
-    const adminHash = await hashPassword(adminPassword);
-    await pool.query(
-      `INSERT INTO users (id, name, credential, password_hash, role, join_date, avatar)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)`,
-      [
-        `u-admin-${Date.now()}`,
-        adminName,
-        String(adminCredential).toLowerCase(),
-        adminHash,
-        'admin',
-        nowJoinDate(),
-        avatarFromName(adminName)
-      ]
-    );
+  const normalizedAdminCredential = String(adminCredential || '').trim().toLowerCase();
+  const normalizedAdminPassword = String(adminPassword || '').trim();
+  const normalizedAdminName = String(adminName || '').trim() || 'Admin';
+
+  if (normalizedAdminCredential && normalizedAdminPassword) {
+    const adminExists = await pool.query('SELECT 1 FROM users WHERE credential = $1 LIMIT 1', [normalizedAdminCredential]);
+    if (adminExists.rowCount === 0) {
+      const adminHash = await hashPassword(normalizedAdminPassword);
+      await pool.query(
+        `INSERT INTO users (id, name, credential, password_hash, role, join_date, avatar)
+         VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+        [
+          `u-admin-${Date.now()}`,
+          normalizedAdminName,
+          normalizedAdminCredential,
+          adminHash,
+          'admin',
+          nowJoinDate(),
+          avatarFromName(normalizedAdminName)
+        ]
+      );
+    }
+  } else if (normalizedAdminCredential || normalizedAdminPassword) {
+    console.warn('Skipping admin bootstrap: set both ADMIN_CREDENTIAL and ADMIN_PASSWORD to seed an admin account.');
   }
 }
 

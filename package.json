@@ -9,13 +9,15 @@
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
     "install-all": "npm install && cd backend && npm install && cd ..",
-    "vercel-build": "echo Build complete",
-    "build": "echo Build complete"
+    "vercel-build": "node scripts/copy-frontend.js",
+    "build": "node scripts/copy-frontend.js"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.105.3",
     "@vercel/blob": "^0.27.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -25,6 +27,5 @@
     "multer": "^2.1.1",
     "pg": "^8.12.0",
     "serverless-http": "^3.2.0"
-  },
-  "devDependencies": {}
+  }
 }

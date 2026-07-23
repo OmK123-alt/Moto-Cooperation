@@ -17,6 +17,9 @@ function authRequired(req, res, next) {
     req.user = verifyToken(token);
     return next();
   } catch (error) {
+    if (error && error.code === 'CONFIG_ERROR') {
+      return res.status(500).json({ success: false, error: error.message });
+    }
     return res.status(401).json({ success: false, error: 'Invalid or expired token' });
   }
 }
