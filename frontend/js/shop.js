@@ -53,7 +53,15 @@ document.querySelectorAll('.shop-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-    renderProducts(tab.dataset.tab);
+    const fallbackMap = {
+      'All Products': 'all',
+      'Car Parts': 'car',
+      'Bike Parts': 'bike',
+      'Accessories': 'accessories',
+      'Apparel': 'apparel'
+    };
+    const selectedTab = tab.dataset.tab || fallbackMap[tab.textContent.trim()] || 'all';
+    renderProducts(selectedTab);
   });
 });
 

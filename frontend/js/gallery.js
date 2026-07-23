@@ -61,6 +61,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    renderGallery(btn.dataset.filter);
+    const filter = btn.dataset.filter || btn.dataset.cat || 'all';
+    renderGallery(filter);
   });
 });

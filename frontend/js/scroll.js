@@ -21,7 +21,9 @@ const navbar     = document.getElementById('navbar');
 
 window.addEventListener('scroll', () => {
   // Scrolled class on navbar
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
+  if (navbar) {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  }
 
   // Active link
   let current = '';
